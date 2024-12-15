@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
-import "./header.css";
+import "./Header.css";
 
 const Header = ({ setIsSearchShow }) => {
   const cartItems = useSelector((state) => state.cart.cartItems);
