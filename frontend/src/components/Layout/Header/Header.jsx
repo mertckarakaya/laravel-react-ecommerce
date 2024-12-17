@@ -1,15 +1,48 @@
 import { useSelector } from "react-redux";
+import axios from 'axios';
 import { Link, useLocation } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import { message } from 'antd';
 import PropTypes from "prop-types";
 import "./Header.css";
 
 const Header = ({ setIsSearchShow }) => {
+  const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
+  const navigate = useNavigate();
   const cartItems = useSelector((state) => state.cart.cartItems);
+
   let totalItem = 0;
   cartItems.map((item) => {
     totalItem = item.quantity + totalItem;
   });
+
   const {pathname} = useLocation();
+
+  const user = localStorage.getItem('user');
+
+  const logout = async () => {
+    if(window.confirm('Çıkış yapmak istediğinize emin misiniz?')) {
+      try {
+        const response = await axios.post(`${VITE_BASE_URL}/auth/logout`, {}, {
+          headers: {
+            Accept :'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')?.replace(/"/g, '')}`
+          }
+        });
+        if (response.data.status) {
+          localStorage.removeItem('user');
+          localStorage.removeItem('token');
+          navigate('/');
+        } else {
+          message.error('Bir sorun oluştu!');
+          console.log(response.data.message);
+        }
+      } catch (e) {
+        message.error('Bir sorun oluştu!');
+        console.log(e);
+      }
+    }
+  }
   
   return (
     <header>
@@ -218,20 +251,25 @@ const Header = ({ setIsSearchShow }) => {
                   <i className="bi bi-person"></i>
                 </Link>
                 <button
-                  className="search-button"
-                  onClick={() => setIsSearchShow(true)}
+                    className="search-button"
+                    onClick={() => setIsSearchShow(true)}
                 >
                   <i className="bi bi-search"></i>
                 </button>
-                <a href="#">
-                  <i className="bi bi-heart"></i>
-                </a>
                 <div className="header-cart">
                   <Link to={"/cart"} className="header-cart-link">
                     <i className="bi bi-bag"></i>
                     <span className="header-cart-count">{totalItem}</span>
                   </Link>
                 </div>
+                {user && (
+                    <button
+                        className="search-button"
+                        onClick={() => logout()}
+                    >
+                      <i className="bi bi-box-arrow-right"></i>
+                    </button>
+                )}
               </div>
             </div>
           </div>

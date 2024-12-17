@@ -11,7 +11,7 @@ const Register = () => {
   });
 
   const navigate = useNavigate();
-
+  const apiURL = import.meta.env.VITE_BASE_URL;
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({...formData, [name]: value});
@@ -20,7 +20,7 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`http://dev.api-ecommerce.local/auth/register`,{
+      const response = await axios.post(`${apiURL}/auth/register`,{
         username: formData.username,
         email: formData.email,
         password: formData.password
@@ -34,7 +34,11 @@ const Register = () => {
         message.success("Kayıt işlemi başarılı");
         localStorage.setItem("user", JSON.stringify(response.data.data.user));
         localStorage.setItem("token", JSON.stringify(response.data.data.token));
-        navigate("/");
+        if(response.data.data.user.role === "admin") {
+          window.location.href = '/admin';
+        } else {
+          navigate("/");
+        }
       } else {
         message.error("Kayıt işlemi başarısız");
         console.log(response.data.error)

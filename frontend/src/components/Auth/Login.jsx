@@ -14,12 +14,12 @@ const Login = () => {
     setFormData({ ...formData, [name]: value })
   }
 
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
+  const apiURL = import.meta.env.VITE_BASE_URL;
   const handleLogin = async (e) => {
     e.preventDefault()
     try {
-      const response = await axios.post(`http://dev.api-ecommerce.local/auth/login`, {
+      const response = await axios.post(`${apiURL}/auth/login`, {
         email: formData.email,
         password: formData.password,
       }, {
@@ -31,14 +31,22 @@ const Login = () => {
         localStorage.setItem('user', JSON.stringify(response.data.data.user));
         localStorage.setItem('token', JSON.stringify(response.data.data.token));
         message.success('Giriş Başarılı!');
-        navigate('/')
+        if(response.data.data.user.role === 'admin') {
+          window.location.href = '/admin';
+        }else {
+          navigate('/')
+        }
       } else {
         message.error('Giriş İşlemi Başarısız!');
         console.log(response.data.error)
       }
     } catch (e) {
-      message.error('Giriş İşlemi Başarısız!');
-      console.log(e)
+      if (e.response.data.message === 'Kullanıcı zaten giriş yapmış.' ) {
+        message.error('Kullanıcı zaten giriş yapmış.');
+      } else {
+        message.error('Giriş İşlemi Başarısız!');
+        console.log(e)
+      }
     }
   }
   return (
