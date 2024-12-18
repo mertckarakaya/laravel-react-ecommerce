@@ -41,12 +41,8 @@ const Login = () => {
         console.log(response.data.error)
       }
     } catch (e) {
-      if (e.response.data.message === 'Kullanıcı zaten giriş yapmış.' ) {
-        message.error('Kullanıcı zaten giriş yapmış.');
-      } else {
-        message.error('Giriş İşlemi Başarısız!');
-        console.log(e)
-      }
+      message.error(e.response.data.message);
+      console.log(e)
     }
   }
   return (

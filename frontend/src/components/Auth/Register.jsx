@@ -44,7 +44,8 @@ const Register = () => {
         console.log(response.data.error)
       }
     } catch (e) {
-      console.log(e);
+      message.error(e.response.data.message);
+      console.log(e)
     }
 
   }
