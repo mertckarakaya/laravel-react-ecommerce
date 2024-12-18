@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -65,6 +66,16 @@ Route::get('/user', function (Request $request) {
                 Route::delete('/delete/{guid}', 'delete');
 
                 Route::get('/get-by-code/{code}', 'getByCode');
+            });
+        });
+
+        //User Routes
+        Route::prefix('users')->group(function (){
+            Route::controller(UserController::class)->group(function (){
+                Route::get('/', 'list');
+                Route::get('/{id}', 'getById');
+                Route::put('/update/{id}', 'update');
+                Route::delete('/delete/{id}', 'delete');
             });
         });
     });
