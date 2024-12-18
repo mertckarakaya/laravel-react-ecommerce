@@ -10,7 +10,6 @@ const ProductItem = ({ productItem }) => {
   const handleAddToCart = () => {
     dispatch(addToCart(productItem));
   }
-  console.log(productItem);
   return (
     <div className="product-item glide__slide glide__slide--active">
       <div className="product-image">
