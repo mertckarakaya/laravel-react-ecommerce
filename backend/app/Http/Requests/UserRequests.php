@@ -50,7 +50,7 @@ class UserRequests extends FormRequest
             'role' => 'Rol',
         ];
     }
-    public function failedValidation(Validator $validator)
+    public function failedValidation(Validator $validator): void
     {
         $result = new ApiResult();
         $result->data = null;
