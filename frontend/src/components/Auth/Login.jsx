@@ -28,8 +28,11 @@ const Login = () => {
         },
       })
       if (response.data.status === true) {
-        localStorage.setItem('user', JSON.stringify(response.data.data.user));
-        localStorage.setItem('token', JSON.stringify(response.data.data.token));
+        localStorage.setItem('user', JSON.stringify({
+          ...response.data.data.user,
+          token: response.data.data.token,
+          timestamp: new Date().toLocaleString()
+        }));
         message.success('Giriş Başarılı!');
         if(response.data.data.user.role === 'admin') {
           window.location.href = '/admin';

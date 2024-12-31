@@ -1,3 +1,4 @@
+import {useEffect} from "react";
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ShopPage from "./pages/ShopPage"
@@ -11,6 +12,17 @@ import AdminUserPage from "./pages/admin/AdminUserPage.jsx";
 import "./App.css";
 
 function App() {
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            const currentTime = new Date().getTime();
+            const oneWeekInMillis = 7 * 24 * 60 * 60 * 1000;
+
+            if (currentTime - new Date(user.timestamp).getTime() > oneWeekInMillis) {
+                localStorage.removeItem('user');
+            }
+        }
+    }, []);
   return (
     <Routes>
         <Route path="/" element={<HomePage />} />

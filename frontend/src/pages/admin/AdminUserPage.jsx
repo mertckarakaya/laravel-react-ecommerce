@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from "react";
-import {message, Table} from "antd";
+import {Button, message, Table, Popconfirm} from "antd";
 import axios from "axios";
 import MetaDecorator from "../../components/utils/MetaDecorator/MetaDecorator.jsx";
 
@@ -13,7 +13,7 @@ const AdminUserPage = () => {
             const response = await axios.get(`${apiURL}/users`,{
                 headers: {
                     Accept :'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token').replace(/"/g, '')}`
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('user'))?.token}`
                 }
             });
             if(response.data.status) {
@@ -32,6 +32,26 @@ const AdminUserPage = () => {
     useEffect(() => {
         fetchUsers();
     }, [fetchUsers]);
+
+    const deleteUser = async (id) => {
+        try {
+            const response = await axios.delete(`${apiURL}/users/delete/${id}`,{
+                headers: {
+                    Accept :'application/json',
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('user'))?.token}`
+                }
+            });
+            if(response.data.status) {
+                fetchUsers();
+
+            } else {
+                message.error('Kullanıcı silinirken bir sorun oluştu.');
+            }
+        } catch (e) {
+            message.error(e.response.data.message);
+            console.log(e);
+        }
+    }
 
     const columns = [
         {
@@ -60,6 +80,22 @@ const AdminUserPage = () => {
             title: 'Rol',
             dataIndex: 'role',
             key: 'role',
+        },
+        {
+            title: 'İşlemler',
+            dataIndex: 'actions',
+            key: 'actions',
+            render: (_, record) => (
+                <Popconfirm
+                    title="Kullanıcıyı Sil"
+                    description="Kullanıcıyı  silmek istediğinize emin misiniz?"
+                    okText="Evet"
+                    cancelText="Hayır"
+                    onConfirm={() => deleteUser(record.id)}
+                >
+                    <Button type="primary" danger>Sil</Button>
+                </Popconfirm>
+            )
         }
     ];
     return (

@@ -32,8 +32,11 @@ const Register = () => {
 
       if(response.data.status === true) {
         message.success("Kayıt işlemi başarılı");
-        localStorage.setItem("user", JSON.stringify(response.data.data.user));
-        localStorage.setItem("token", JSON.stringify(response.data.data.token));
+        localStorage.setItem('user', JSON.stringify({
+          ...response.data.data.user,
+          token: response.data.data.token,
+          timestamp: new Date().toLocaleString()
+        }));
         if(response.data.data.user.role === "admin") {
           window.location.href = '/admin';
         } else {

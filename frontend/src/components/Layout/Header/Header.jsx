@@ -26,7 +26,7 @@ const Header = ({ setIsSearchShow }) => {
         const response = await axios.post(`${VITE_BASE_URL}/auth/logout`, {}, {
           headers: {
             Accept :'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')?.replace(/"/g, '')}`
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem('user'))?.token}`
           }
         });
         if (response.data.status) {
