@@ -59,7 +59,7 @@ const AdminUserPage = () => {
             dataIndex: 'avatar',
             key: 'avatar',
             render : (imgSrc) => (
-                <img src={imgSrc} alt="Avatar" style={{
+                <img src={imgSrc} alt="Image" style={{
                     width: "50px",
                     height: "50px",
                     borderRadius: "50%"
@@ -67,7 +67,7 @@ const AdminUserPage = () => {
             )
         },
         {
-            title: 'Kullanıcı Adı',
+            title: 'Ad',
             dataIndex: 'name',
             key: 'name',
         },

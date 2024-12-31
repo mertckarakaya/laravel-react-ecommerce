@@ -34,7 +34,7 @@ const AdminLayout = ({children}) => {
       key: "2",
       icon: <AppstoreOutlined />,
       label: "Kategoriler",
-      path: "/",
+      path: "#",
       children: [
         {
           key: "3",

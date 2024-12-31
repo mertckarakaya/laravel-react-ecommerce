@@ -8,7 +8,10 @@ import ProductDetailPage from "./pages/ProductDetailPage";
 import BlogDetailsPage from "./pages/BlogDetailsPage";
 import BlogPage from "./pages/BlogPage";
 import CartPage from "./pages/CartPage";
-import AdminUserPage from "./pages/admin/AdminUserPage.jsx";
+import UserPage from "./pages/Admin/UserPage.jsx";
+import CategoryPage from "./pages/Admin/Categories/CategoryPage.jsx";
+import UpdateCategoryPage from "./pages/Admin/Categories/UpdateCategoryPage.jsx";
+import CreateCategoryPage from "./pages/Admin/Categories/CreateCategoryPage.jsx";
 import "./App.css";
 
 function App() {
@@ -34,7 +37,10 @@ function App() {
         <Route path="/blog/:id" element={<BlogDetailsPage />} />
         <Route path="/product/:id" element={<ProductDetailPage />} />
         <Route path="/admin/*">
-            <Route path="users" element={<AdminUserPage />} />
+            <Route path="users" element={<UserPage />} />
+            <Route path="categories" element={<CategoryPage />} />
+            <Route path="categories/:guid" element={<UpdateCategoryPage />} />
+            <Route path="categories/create" element={<CreateCategoryPage />} />
         </Route>
     </Routes>
   );
