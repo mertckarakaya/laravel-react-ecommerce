@@ -20,6 +20,7 @@ export default defineConfig({
           react: ['react', 'react-dom'],
           antd: ['antd'],
           axios: ['axios'],
+          quill: ['quill']
         },
       },
     },
