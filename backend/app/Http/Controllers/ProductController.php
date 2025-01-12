@@ -76,8 +76,8 @@ class ProductController extends Controller
     public function list()
     {
         try{
-            $products = Product::select('guid', 'name', 'description', 'current_price', 'discount_price')
-                ->with(['colors', 'sizes', 'images', 'reviews.user'])
+            $products = Product::select('guid','category_guid', 'name', 'description', 'current_price', 'discount_price')
+                ->with(['colors', 'sizes', 'images', 'reviews.user', 'category'])
                 ->get();
 
             $result = new ApiResult();

@@ -137,7 +137,14 @@ const CreateProductPage = () => {
                             },
                         ]}
                     >
-                        <Select>
+                        <Select
+                            showSearch
+                            placeholder="Kategori seçiniz"
+                            optionFilterProp="children"
+                            filterOption={(input, option) =>
+                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
+                        >
                             {categories.map((category) => (
                                 <Select.Option
                                     value={category.guid}
