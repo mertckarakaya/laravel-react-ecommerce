@@ -9,7 +9,8 @@ import {
     Input,
     Card,
     message,
-    Spin
+    Spin,
+    InputNumber
 } from 'antd';
 import {
     useNavigate,
@@ -18,18 +19,18 @@ import {
 import MetaDecorator from "../../../components/utils/MetaDecorator/MetaDecorator.jsx";
 import axios from "axios";
 
-const UpdateCategoryPage = () => {
+const UpdateCouponPage = () => {
     const ApiURI = import.meta.env.VITE_BASE_URL;
     const [form] = Form.useForm();
     const {guid} = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    const [categoryName, setCategoryName] = useState('');
+    const [couponName, setCouponName] = useState('');
 
-    const fetchCategoryDetail = useCallback(async (guid) => {
+    const fetchCouponDetail = useCallback(async (guid) => {
         try {
             setLoading(true);
-            const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/categories/${guid}`, {
+            const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/coupons/${guid}`, {
                 headers: {
                     Accept: 'application/json',
                     Authorization: `Bearer ${JSON.parse(localStorage.getItem('user'))?.token}`
@@ -38,19 +39,19 @@ const UpdateCategoryPage = () => {
             if (response.data.status) {
                 const data = response.data.data;
                 form.setFieldsValue({
-                    name: data.name,
-                    img: data.img
+                    code: data.code,
+                    discount_percent: data.discount_percent
                 });
-                setCategoryName(data.name);
+                setCouponName(data.name);
             } else {
-                message.error('Kategori getirilirken bir sorun oluştu.');
+                message.error('Kupon getirilirken bir sorun oluştu.');
             }
             setLoading(false);
         } catch (e) {
             if(e.status === 404) {
-                message.error('Kategori bulunamadı.');
+                message.error('Kupon bulunamadı.');
                 setTimeout(() => {
-                    navigate('/admin/categories');
+                    navigate('/admin/coupons');
                 },1000);
             } else {
                 message.error(e.response.data.message);
@@ -61,13 +62,13 @@ const UpdateCategoryPage = () => {
     }, [ApiURI]);
 
     useEffect(() => {
-        fetchCategoryDetail(guid);
-    }, [fetchCategoryDetail]);
+        fetchCouponDetail(guid);
+    }, [fetchCouponDetail]);
 
     const onFinish = async (values) => {
         try {
             setLoading(true);
-            const response = await axios.put(`${import.meta.env.VITE_BASE_URL}/categories/update/${guid}`,
+            const response = await axios.put(`${import.meta.env.VITE_BASE_URL}/coupons/update/${guid}`,
                 values,
                 {
                 headers: {
@@ -76,14 +77,14 @@ const UpdateCategoryPage = () => {
                 }
             });
             if (response.data.status) {
-                message.success('Kategori başarıyla güncellendi.');
+                message.success('Kupon başarıyla güncellendi.');
                 const data = response.data.data;
                 form.setFieldsValue({
-                    name: data.name,
-                    img: data.img
+                    name: data.code,
+                    discount_percent: data.discount_percent
                 })
             } else {
-                message.error('Kategori güncellenirken bir sorun oluştu.');
+                message.error('Kupon güncellenirken bir sorun oluştu.');
             }
         } catch (e) {
             message.error(e.response.data.message);
@@ -96,15 +97,15 @@ const UpdateCategoryPage = () => {
     return (
         <Spin spinning={loading}>
             <MetaDecorator
-                title={`Admin Panel Kategori Güncelleme - ${categoryName}`}
-                description={`${categoryName} adlı kategory güncelleme sayfasıdır.`}
+                title={`Admin Panel Kupon Güncelleme - ${couponName}`}
+                description={`${couponName} adlı kupon güncelleme sayfasıdır.`}
             />
             <Card
-                title="Kategori Güncelle"
+                title="Kupon Güncelle"
                 extra={
                     <Button
                         type="primary"
-                        onClick={() => navigate('/admin/categories')}
+                        onClick={() => navigate('/admin/coupons')}
                     >
                         Geri Dön
                     </Button>
@@ -118,28 +119,29 @@ const UpdateCategoryPage = () => {
                     form={form}
                 >
                     <Form.Item
-                        label="Kategori Adı"
-                        name="name"
+                        label="Kupon Kodu"
+                        name="code"
                         rules={[
                             {
                                 required: true,
-                                message: 'Lütfen kategori adını giriniz!',
+                                message: 'Lütfen kupon codu giriniz!',
                             },
                         ]}
                     >
                         <Input />
                     </Form.Item>
+
                     <Form.Item
-                        label="Kategori Görseli (Link)"
-                        name="img"
+                        label="İndirim Oranı"
+                        name="discount_percent"
                         rules={[
                             {
                                 required: true,
-                                message: 'Lütfen kategori görselini (Link) giriniz!',
+                                message: 'Lütfen indirim oranı giriniz!',
                             },
                         ]}
                     >
-                        <Input />
+                        <InputNumber />
                     </Form.Item>
                     <Button type="primary" htmlType="submit">
                         Güncelle
@@ -150,4 +152,4 @@ const UpdateCategoryPage = () => {
     )
 }
 
-export default UpdateCategoryPage;
+export default UpdateCouponPage;

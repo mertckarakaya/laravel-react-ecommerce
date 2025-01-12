@@ -1,10 +1,10 @@
 import { useState} from 'react';
-import { Button, Form, Input, Card, message, Spin } from 'antd';
+import { Button, Form, Input, Card, message, Spin, InputNumber } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import MetaDecorator from "../../../components/utils/MetaDecorator/MetaDecorator.jsx";
 
-const CreateCategoryPage = () => {
+const CreateCouponPage = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
@@ -12,7 +12,7 @@ const CreateCategoryPage = () => {
     const onFinish = async (values) => {
         try {
             setLoading(true);
-            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/categories/create`,
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/coupons/create`,
                 values,
                 {
                     headers: {
@@ -21,13 +21,13 @@ const CreateCategoryPage = () => {
                     }
                 });
             if (response.data.status) {
-                message.success('Kategori başarıyla eklendi.');
+                message.success('Kupon başarıyla eklendi.');
                 const data = response.data.data;
                 setTimeout(() => {
-                    navigate(`/admin/categories/${data.guid}`);
+                    navigate(`/admin/coupons/${data.guid}`);
                 }, 5000);
             } else {
-                message.error('Kategori eklenirken bir sorun oluştu.');
+                message.error('Kupon eklenirken bir sorun oluştu.');
             }
         } catch (e) {
             message.error(e.response.data.message);
@@ -40,15 +40,15 @@ const CreateCategoryPage = () => {
     return (
         <Spin spinning={loading}>
             <MetaDecorator
-                title="Admin Panel Kategori Ekleme"
-                description="Admin Panel Kategori Ekleme sayfasıdır."
+                title="Admin Panel Kupon Ekleme"
+                description="Admin Panel Kupon Ekleme sayfasıdır."
             />
             <Card
-                title="Kategori Ekle"
+                title="Kupon Ekle"
                 extra={
                 <Button
                     type="primary"
-                    onClick={() => navigate('/admin/categories')}
+                    onClick={() => navigate('/admin/coupons')}
                 >
                     Geri Dön
                 </Button>
@@ -62,12 +62,12 @@ const CreateCategoryPage = () => {
                     form={form}
                 >
                     <Form.Item
-                        label="Kategori Adı"
-                        name="name"
+                        label="Kupon Kodu"
+                        name="code"
                         rules={[
                             {
                                 required: true,
-                                message: 'Lütfen kategori adını giriniz!',
+                                message: 'Lütfen kupon kodu giriniz!',
                             },
                         ]}
                     >
@@ -75,16 +75,16 @@ const CreateCategoryPage = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="Kategori Görseli (Link)"
-                        name="img"
+                        label="İndirim Oranı"
+                        name="discount_percent"
                         rules={[
                             {
                                 required: true,
-                                message: 'Lütfen kategori görselini (Link) giriniz!',
+                                message: 'Lütfen indirim oranını giriniz!',
                             },
                         ]}
                     >
-                        <Input />
+                        <InputNumber />
                     </Form.Item>
                     <Button type="primary" htmlType="submit">
                         Ekle
@@ -95,4 +95,4 @@ const CreateCategoryPage = () => {
     )
 }
 
-export default CreateCategoryPage;
+export default CreateCouponPage;

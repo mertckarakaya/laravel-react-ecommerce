@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useCallback} from 'react';
 import {
     Button,
     Form,
@@ -9,7 +9,7 @@ import {
     InputNumber,
     Select
 } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import MetaDecorator from '../../../components/utils/MetaDecorator/MetaDecorator.jsx';
@@ -17,11 +17,53 @@ import 'react-quill/dist/quill.snow.css';
 
 const CreateProductPage = () => {
     const apiURI = import.meta.env.VITE_BASE_URL;
+    const params = useParams();
+    const productGuid = params.guid;
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState([]);
+    const [productName, setProductName] = useState('');
 
+    const fetchProductDetail = useCallback(async (guid) => {
+        try {
+            setLoading(true);
+            const response = await axios.get(`${apiURI}/products/${guid}`, {
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('user'))?.token}`
+                }
+            });
+            if (response.data.status) {
+                const data = response.data.data;
+                setProductName(data.name);
+                form.setFieldsValue({
+                    name: data.name,
+                    category: data.category_guid,
+                    current_price: data.current_price,
+                    discount_price: data.discount_price,
+                    description: data.description,
+                    images: data.images.map(image => image.image_path).join('\n'),
+                    colors: data.colors.map(color => color.hex_code).join('\n'),
+                    sizes: data.sizes.map(size => size.size).join('\n')
+                });
+            } else {
+                message.error('Ürün getirilirken bir sorun oluştu.');
+            }
+            setLoading(false);
+        } catch (e) {
+            if(e.status === 404) {
+                message.error('Ürün bulunamadı.');
+                setTimeout(() => {
+                    navigate('/admin/products');
+                },1000);
+            } else {
+                message.error(e.response.data.message);
+                console.log(e);
+                setLoading(false);
+            }
+        }
+    }, [apiURI]);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -47,6 +89,7 @@ const CreateProductPage = () => {
             }
         };
         fetchCategories();
+        fetchProductDetail(productGuid);
     }, [apiURI]);
 
     const onFinish = async (values) => {
@@ -92,8 +135,8 @@ const CreateProductPage = () => {
     return (
         <Spin spinning={loading}>
             <MetaDecorator
-                title="Admin Panel Ürün Ekleme"
-                description="Admin Panel Ürün Ekleme sayfasıdır."
+                title={`Admin Panel Ürün Güncelle - ${productName}`}
+                description={`Admin Panel - ${productName} adlı ürünü güncelleme sayfasıdır.`}
             />
             <Card
                 title="Ürün Ekle"

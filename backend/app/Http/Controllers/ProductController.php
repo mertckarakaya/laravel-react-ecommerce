@@ -97,9 +97,9 @@ class ProductController extends Controller
     public function getByGuid($guid)
     {
         try {
-            $product = Product::select('guid', 'name', 'description', 'current_price', 'discount_price')
+            $product = Product::select('guid','category_guid' , 'name', 'description', 'current_price', 'discount_price')
+                ->with(['category', 'colors', 'sizes', 'images', 'reviews'])
                 ->where('guid', $guid)
-                ->with('colors', 'sizes', 'images', 'reviews')
                 ->first();
 
             if ($product == null) {
