@@ -80,6 +80,13 @@ Route::get('/user', function (Request $request) {
         });
     });
 
+    Route::prefix('web')->group(function (){
+        Route::controller(CategoryController::class)->group(function (){
+            Route::get('/categories', 'webList');
+        });
+
+    });
+
 
 
 

@@ -78,6 +78,18 @@ class CategoryController extends Controller
         }
     }
 
+    public function webList() : JsonResponse
+    {
+        try {
+            $categories = Category::select('guid','name','img')
+                ->get();
+
+            return $this->handleResponse($categories);
+        } catch (\Exception $ex) {
+            return $this->handleResponse(null, $ex->getMessage(), false, 500);
+        }
+    }
+
     private function handleResponse(mixed $data, string $message = 'Success', bool $status = true, int $code = 200) : JsonResponse
     {
         $result = new ApiResult();
